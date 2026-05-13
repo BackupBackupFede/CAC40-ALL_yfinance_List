@@ -26,7 +26,7 @@ The file `euronext_full_enriched.csv` contains the following columns:
 import pandas as pd
 import yfinance as yf
 
-df = pd.read_csv("euronext_paris_yf_tickers_enriched.csv")
+df = pd.read_csv("euronext_full_enriched.csv")
 
 tickers = df["yahoo_ticker"].dropna().unique().tolist()
 
