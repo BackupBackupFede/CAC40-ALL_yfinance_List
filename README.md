@@ -1,20 +1,24 @@
-# Euronext Paris yfinance Tickers (Enriched)
+# Euronext Paris yfinance Dataset (Enriched)
 
-Clean and ready-to-use dataset of Euronext Paris equities, fully compatible with yfinance.
+Clean and ready-to-use dataset of **Euronext Paris equities**, fully compatible with `yfinance`, enriched with market data and ICB classification.
 
 ## Dataset
 
-The file `euronext_paris_yf_tickers_enriched.csv` contains:
+The file `euronext_full_enriched.csv` contains the following columns:
 
-* `isin`: unique security identifier
-* `symbol`: base ticker (Euronext format)
-* `yahoo_ticker`: ticker compatible with yfinance (e.g. `AIR.PA`)
-* `name`: company name
-* `sector`: business sector
-* `industry`: industry classification
-* `market_cap`: market capitalization
+- `symbol`: base Euronext ticker
+- `yahoo_ticker`: ticker compatible with Yahoo Finance / yfinance (e.g. `AIR.PA`)
+- `isin`: unique security identifier
+- `name`: company name
+- `market`: listing market (e.g. Euronext Paris)
+- `market_cap`: market capitalization (when available)
 
-All tickers have been validated to ensure they return actual price data via yfinance.
+### ICB classification (Industry Classification Benchmark)
+
+- `icb_industry`: high-level industry group
+- `icb_supersector`: supersector classification
+- `icb_sector`: sector classification
+- `icb_subsector`: detailed subsector classification
 
 ## Usage
 
@@ -24,38 +28,47 @@ import yfinance as yf
 
 df = pd.read_csv("euronext_paris_yf_tickers_enriched.csv")
 
-tickers = df["yahoo_ticker"].tolist()
+tickers = df["yahoo_ticker"].dropna().unique().tolist()
 
-data = yf.download(tickers[:10])
+data = yf.download(tickers[:10], period="1y", interval="1d")
 ```
 
 ## Use cases
 
-* Stock screening (by sector, market cap, etc.)
-* Backtesting strategies on Euronext Paris equities
-* Portfolio construction
-* Financial data analysis in Python
+Stock screening (by sector, industry, market cap, etc.)
+Factor research and quantitative analysis
+Backtesting strategies on Euronext Paris equities
+Portfolio construction & diversification studies
+Financial data analysis in Python
 
 ## Methodology
 
-1. Scraped Euronext official website for listed equities
-2. Filtered French listings (ISIN starting with "FR")
-3. Validated tickers using yfinance price data
-4. Enriched dataset with sector, industry, and market capitalization
-5. Merged with ISIN and company names
+Scraped official Euronext listings
+Filtered French-listed equities (ISIN starting with FR)
+Mapped tickers to Yahoo Finance format (.PA)
+Validated tickers using yfinance price availability
+Enriched dataset with:
+Market capitalization
+ICB classification (industry → subsector)
+Company names and ISIN mapping
 
 ## Notes
 
-* Some fields may be missing due to Yahoo Finance data limitations
-* Market data is sourced from yfinance
-* Dataset is limited to Euronext Paris tickers (`.PA`)
+Some fields (notably market_cap) may be missing or partially outdated due to Yahoo Finance limitations
+All tickers are validated against live data availability in yfinance
+Dataset is focused on Euronext Paris (.PA) listings only
 
 ## Requirements
 
-* Python 3.x
-* pandas
-* yfinance
+Python 3.x
+pandas
+yfinance
+
+```python
+pip install pandas yfinance
+```
 
 ## Disclaimer
 
-This project is for informational purposes only and does not constitute investment advice.
+This dataset is provided for informational and research purposes only.
+It does not constitute financial or investment advice.
